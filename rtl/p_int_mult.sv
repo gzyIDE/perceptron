@@ -26,13 +26,15 @@ module p_int_mult #(
 	output wire [O_PREC-1:0]		out
 );
 
-	/***** internal data representation *****/
+	//***** internal data representation
 	localparam I1_SIGN = I1_CONF.sign;
 	localparam I2_SIGN = I2_CONF.sign;
 	localparam E_SIGN = I1_SIGN || I2_SIGN;
 	localparam E_PREC = I1_PREC + I2_PREC;
+	parameter dconf_t E_CONF
+		= dconf_t'{dtype: INT, sign: E_SIGN, prec: E_PREC, frac: 0};
 
-	/***** internal wires *****/
+	//***** internal wires
 	wire [E_PREC-1:0]				res_mult;
 
 
@@ -57,12 +59,12 @@ module p_int_mult #(
 
 
 
-	/***** shrink/expand data for output *****/
+	//***** shrink/expand data for output
 	generate
 		if ( O_PREC > E_PREC ) begin : exp
 			exp_int #(
-				.I_PREC	( E_PREC ),
-				.O_PREC	( O_PREC )
+				.I_CONF ( E_CONF ),
+				.O_CONF ( O_CONF )
 			) inst (
 				.in		( res_mult ),
 				.out	( out )
@@ -71,8 +73,8 @@ module p_int_mult #(
 			assign ovf = `Disable;
 		end else if ( O_PREC < E_PREC ) begin : rdc
 			rdc_int #(
-				.I_PREC	( E_PREC ),
-				.O_PREC	( O_PREC )
+				.I_CONF	( E_CONF ),
+				.O_CONF	( O_CONF )
 			) inst (
 				.in		( res_mult ),
 				.ovf	( ovf ),

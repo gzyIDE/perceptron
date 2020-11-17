@@ -7,7 +7,7 @@
 * https://opensource.org/licenses/mit-license.php
 */
 
-`include "stddef.h"
+`include "stddef.vh"
 
 module p_bool_mult #(
 	// port configuration

@@ -70,6 +70,7 @@ module p_mult #(
 					.out		( out )
 				);
 
+				assign ovf = `Disable;
 				assign rounded = `Disable;
 				assign udf = `Disable;
 			end

@@ -40,7 +40,7 @@ module cnv_prec #(
 
 				// expand bit width
 				exp_prec #(
-					.ICONF	( I_CONF ),
+					.I_CONF	( I_CONF ),
 					.O_CONF	( O_CONF )
 				) exp_prec (
 					.in		( in ),
@@ -49,7 +49,7 @@ module cnv_prec #(
 			end else if ( SHRINK ) begin : shr
 				// shrink bit width
 				rdc_prec #(
-					.ICONF	( I_CONF ),
+					.I_CONF	( I_CONF ),
 					.O_CONF	( O_CONF )
 				) exp_prec (	
 					.in			( in ),

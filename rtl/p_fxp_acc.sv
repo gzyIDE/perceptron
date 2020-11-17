@@ -24,9 +24,6 @@ module p_fxp_acc #(
 
 	//***** internal parameter
 	localparam SIGN = CONF.sign;
-	localparam FRAC = CONF.frac;
-	localparam E_PREC = PREC + 1;
-	localparam E_FRAC = FRAC;
 	localparam STAGE = $clog2(IN);
 	localparam EIN = 1 << STAGE;
 	localparam NUM = EIN-1;

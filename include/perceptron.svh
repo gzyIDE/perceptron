@@ -46,7 +46,7 @@ typedef struct {
 
 //*** Default Configurations
 //* Default Settings
-`define DEF_DCONF		dconf_t'{dtype:`DEF_TYPE, sign:1'b0, prec:8, frac:0}
+`define DEF_DCONF		dconf_t'{dtype:`DEF_TYPE, sign:1'b0, prec:4, frac:0}
 `define DEF_DCONFS		dconf_t'{dtype:`DEF_TYPE, sign:1'b0, prec:4, frac:0}
 `define DEF_DCONFL		dconf_t'{dtype:`DEF_TYPE, sign:1'b0, prec:16, frac:0}
 //* Boolean

@@ -31,7 +31,7 @@ module p_int_mult #(
 	localparam I2_SIGN = I2_CONF.sign;
 	localparam E_SIGN = I1_SIGN || I2_SIGN;
 	localparam E_PREC = I1_PREC + I2_PREC;
-	parameter dconf_t E_CONF
+	localparam dconf_t E_CONF
 		= dconf_t'{dtype: INT, sign: E_SIGN, prec: E_PREC, frac: 0};
 
 	//***** internal wires

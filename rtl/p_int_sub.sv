@@ -117,8 +117,8 @@ module p_int_sub #(
 				assign out_sub
 					= ovf
 						? res_sign
-							? {1'b0, {O_PREC-1{1'b1}}}
-							: {1'b1, {O_PREC-1{1'b0}}}
+							? {1'b1, {O_PREC-1{1'b0}}}
+							: {1'b0, {O_PREC-1{1'b1}}}
 						: res_sub[O_PREC-1:0];
 			end
 		endcase

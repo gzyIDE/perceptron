@@ -11,7 +11,7 @@
 `define _PERCEPTRON_SVH_INCLUDED_
 
 //***** Calculation Data Type
-typedef enum int {
+typedef enum byte {
 	BOOL,	// boolean
 	INT,	// integer
 	FXP,	// fixed point
@@ -24,7 +24,7 @@ typedef enum int {
 
 
 //***** Activation Function
-typedef enum int {
+typedef enum byte {
 	STEP,		// f(x) = step(x)
 	LINEAR,		// f(x) = x
 	ReLU,		// f(x) = x > 0 ? x : 0
@@ -40,8 +40,8 @@ typedef enum int {
 typedef struct {
 	dtype_t		dtype;	// data type
 	bit			sign;	// sign(= 1) or unsigned(= 0)
-	int 		prec;	// precision
-	int 		frac;	// fraction part (for fixed point, floating point)
+	byte 		prec;	// precision
+	byte 		frac;	// fraction part (for fixed point, floating point)
 } dconf_t;
 
 //*** Default Configurations

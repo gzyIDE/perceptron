@@ -26,13 +26,13 @@ module p_int_add #(
 	output wire [O_PREC-1:0]	out
 );
 
-	/***** internal data representation *****/
+	//***** internal data representation
 	localparam I1_SIGN = I1_CONF.sign;
 	localparam I2_SIGN = I2_CONF.sign;
 	localparam E_SIGN = I1_SIGN || I2_SIGN;
 	localparam E_PREC = O_PREC + 1;
 
-	/***** internal wires *****/
+	//***** internal wires
 	wire						in1_sign;
 	wire 						in2_sign;
 	wire signed [E_PREC-1:0]	res_add;
@@ -42,12 +42,12 @@ module p_int_add #(
 
 
 
-	/***** assign output *****/
+	//***** assign output
 	assign out = out_add;
 
 
 
-	/***** internal assigns *****/
+	//***** internal assigns
 	assign in1_sign = in1[I1_PREC-1];
 	assign in2_sign = in2[I2_PREC-1];
 	assign u_res_sign = res_add[E_PREC-1];
@@ -55,7 +55,7 @@ module p_int_add #(
 
 
 
-	/***** calculation *****/
+	//***** calculation
 	generate
 		case ( {I2_SIGN, I1_SIGN} )
 			{`Disable, `Disable} : begin : type_uu
@@ -74,12 +74,7 @@ module p_int_add #(
 				assign in1_tmp = {in1[I1_PREC-1], in1};
 				assign in2_tmp = {1'b0, in2};
 				assign res_add = in1_tmp + in2_tmp;
-				//assign ovf 
-				//	= (in1_sign && !u_res_sign && s_res_sign)
-				//		|| (!in1_sign && ( s_res_sign || u_res_sign ));
 				assign ovf = u_res_sign ^ s_res_sign;
-					//= (in1_sign && ( u_res_sign ^ s_res_sign ))
-					//	|| (!in1_sign && (s_res_sign ^ u_res_sign));
 				assign out_add
 					= ovf
 						? res_add[E_PREC-1]
@@ -94,10 +89,6 @@ module p_int_add #(
 				assign in1_tmp = {1'b0, in1};
 				assign in2_tmp = {in2[I2_PREC-1], in2};
 				assign res_add = in1_tmp + in2_tmp;
-				//assign ovf = !in2_sign && s_res_sign;
-				//assign ovf
-				//	= in2_sign && !u_res_sign && s_res_sign
-				//		|| !in2_sign && ( s_res_sign || u_res_sign );
 				assign ovf = u_res_sign ^ s_res_sign;
 				assign out_add
 					= ovf

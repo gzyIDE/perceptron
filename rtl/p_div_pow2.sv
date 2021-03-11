@@ -14,18 +14,18 @@
 module p_div_pow2 #(
 	// shift width
 	parameter SHIFT = 2,
-	// carry up mode
+	// round up mode
 	//		0: discard lower bits
-	//		1: carry up if lower bits are greater than or equal (1<<n)/2
-	//		2: carry up if lower bits are not zero
-	parameter CARRYUP = 0,
+	//		1: round up if lower bits are greater than or equal (1<<n)/2
+	//		2: round up if lower bits are not zero
+	parameter ROUND = 0,
 	// port configuration
 	parameter dconf_t I_CONF = `DEF_DCONF,
 	parameter dconf_t O_CONF = `DEF_DCONF
 )(
-	input wire [I_CONF.prec-1:0]	in,
-	output wire [SHIFT-1:0]			rem,
-	output wire [O_CONF.prec-1:0]	out
+	input wire signed [I_CONF.prec-1:0]	in,
+	output wire signed [SHIFT-1:0]			rem,
+	output wire signed [O_CONF.prec-1:0]	out
 );
 
 	generate
@@ -36,7 +36,7 @@ module p_div_pow2 #(
 			INT : begin : t_int
 				p_int_div_pow2 #(
 					.SHIFT		( SHIFT ),
-					.CARRYUP	( CARRYUP ),
+					.ROUND		( ROUND ),
 					.I_CONF		( I_CONF ),
 					.O_CONF		( O_CONF )
 				) simple_div (
@@ -50,7 +50,7 @@ module p_div_pow2 #(
 				// (same module as int is sufficient)
 				p_int_div_pow2 #(
 					.SHIFT		( SHIFT ),
-					.CARRYUP	( CARRYUP ),
+					.ROUND		( ROUND ),
 					.I_CONF		( I_CONF ),
 					.O_CONF		( O_CONF )
 				) simple_div (

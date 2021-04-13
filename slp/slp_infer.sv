@@ -48,14 +48,14 @@ module slp_infer #(
 				: $clog2(IN) + 1
 			: ( TYPE == FXP  || TYPE == INT )
 				? NO_ACC_EXT
-					? I_PREC + W_PREC
-					: W_PREC
+					? W_PREC
+					: I_PREC + W_PREC
 				: `Max(I_PREC, W_PREC);
 	localparam E_FRAC 
 		= ( TYPE == FXP || TYPE == INT ) 
 			? NO_ACC_EXT 
-				? I_FRAC + W_FRAC 
-				: W_FRAC
+				? W_FRAC
+				: I_FRAC + W_FRAC 
 			: `Max(I_FRAC, W_FRAC);
 	localparam dconf_t E_CONF = dconf_t'{
 		dtype: TYPE, sign: E_SIGN, prec: E_PREC, frac: E_FRAC
@@ -105,11 +105,11 @@ module slp_infer #(
 				.O_CONF		( E_CONF )
 			) mult (
 				.in1		( i_each ),
-				.in2		( w_each ),
-				.ovf		( mult_ovf ),
-				.udf		( mult_udf ),
-				.rounded	( mult_rounded ),
-				.out		( res_each )
+				.in2		( weight[gi] ),
+				.ovf		( mult_ovf[gi] ),
+				.udf		( mult_udf[gi] ),
+				.rounded	( mult_rounded[gi] ),
+				.out		( res_mult[gi] )
 			);
 		end
 	endgenerate

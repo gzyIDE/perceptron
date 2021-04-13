@@ -1,7 +1,7 @@
 /*
 * <slp.sv>
 * 
-* Copyright (c) 2020 Yosuke Ide
+* Copyright (c) 2020-2021 Yosuke Ide <yosuke.ide@keio.jp>
 * 
 * This software is released under the MIT License.
 * https://opensource.org/licenses/mit-license.php
@@ -9,22 +9,28 @@
 
 `include "stddef.vh"
 `include "perceptron.svh"
+`include "slp.svh"
+`include "fxp_util.svh"
+`include "int_util.svh"
+`include "fp_util.svh"
 
-// Single layer perceptrons
+// An example of single layer perceptrons
 module slp #(
 	// port configuration
-	parameter IN = 8,							// # of inputs
-	parameter dconf_t I_CONF = `DEF_DCONF,		// Input
-	parameter dconf_t R_CONF = `DEF_DCONF,		// Learning Rate
-	parameter dconf_t W_CONF = `DEF_DCONF,		// Weight
-	parameter dconf_t O_CONF = `DEF_DCONF,		// Output
+	parameter IN = 8,								// # of inputs
+	parameter dconf_t I_CONF = `DEF_DCONF,			// Input
+	parameter dconf_t R_CONF = `DEF_DCONF,			// Learning Rate
+	parameter dconf_t W_CONF = `DEF_DCONF,			// Weight
+	parameter dconf_t O_CONF = `DEF_DCONF,			// Output
 	// Activation Function
-	parameter actf_t ACT = `DEF_ACT,			// Activation Function
+	parameter actf_t ACT = `DEF_ACT,				// Activation Function
+	// Reset
+	parameter SlpReset_t RESET = `DEFAULT_SLP_RESET,// reset method
 	// constant
-	parameter I_PREC = I_CONF.prec,				// data width
-	parameter O_PREC = O_CONF.prec,				// prediction result width
-	parameter R_PREC = R_CONF.prec,				// learning rate width
-	parameter W_PREC = W_CONF.prec				// weight width
+	parameter I_PREC = I_CONF.prec,					// data width
+	parameter O_PREC = O_CONF.prec,					// prediction result width
+	parameter R_PREC = R_CONF.prec,					// learning rate width
+	parameter W_PREC = W_CONF.prec					// weight width
 )(
 	input  wire							clk,
 	input  wire							reset_,
@@ -90,36 +96,121 @@ module slp #(
 
 
 
-	/***** sequential logics *****/
+	//***** sequential logics
 	integer i;
-	always @( posedge clk or negedge reset_ ) begin
-		if ( reset_ == `Enable_ ) begin
-			for ( i = 0; i < WEIGHT; i = i + 1) begin
-`ifdef INIT_ALL_ZERO
-				weight[i] <= {W_PREC{1'b0}};
-`else
-				weight[i] <= init_rand(i);
-`endif
-			end
-		end else begin
-			weight <= t_en ? new_weight : weight;
-		end
-	end
-
-	function [W_PREC-1:0] init_rand;
-		input longint	idx;
-		longint			i;
-		longint			r;
-		begin
-			r = 2463534242;
-			for ( i = 0; i < idx+1; i = i + 1 ) begin
-				r = r ^ (r << 13);
-				r = r ^ (r >> 17);
-				r = r ^ (r << 5);
+	generate
+		case ( RESET )
+			//*** initialize with zero
+			RESET_ZERO : begin : CASE_zero
+				always_ff @( posedge clk or negedge reset_ ) begin
+					if ( reset_ == `Enable_ ) begin
+						weight <= 0;
+					end else begin
+						weight <= t_en ? new_weight : weight;
+					end
+				end
 			end
 
-			init_rand = r;
-		end
-	endfunction
+			//*** initialize all wights with maximum value
+			RESET_MAX : begin : CASE_max
+				always_ff @( posedge clk or negedge reset_ ) begin
+					if ( reset_ == `Enable_ ) begin
+						for ( i = 0; i < WEIGHT ; i = i + 1 ) begin
+							case ( W_CONF.dtype )
+								BOOL : begin
+									weight[i] <= 1'b0;
+								end
+								INT : begin
+									weight[i] <=
+										IntUtils #(
+											.CONF	( W_CONF )
+										)::get_max(`Low);
+								end
+								FXP : begin
+									weight[i] <=
+										FxpUtils #(
+											.CONF	( W_CONF )
+										)::get_max(`Low);
+								end
+								FP : begin
+									weight[i] <=
+										FpUtils #(
+											.CONF	( W_CONF )
+										)::get_max(`Low);
+								end
+							endcase
+						end
+					end else begin
+						weight <= t_en ? new_weight : weight;
+					end
+				end
+			end
+
+			//*** initialize all weights with minimum value
+			RESET_MIN : begin : CASE_min
+				always_ff @( posedge clk or negedge reset_ ) begin
+					if ( reset_ == `Enable_ ) begin
+						for ( i = 0; i < WEIGHT ; i = i + 1 ) begin
+							case ( W_CONF.dtype )
+								BOOL : begin
+									weight[i] <= 1'b1;
+								end
+								INT : begin
+									weight[i] <=
+										IntUtils #(
+											.CONF	( W_CONF )
+										)::get_max(`High);
+								end
+								FXP : begin
+									weight[i] <=
+										FxpUtils #(
+											.CONF	( W_CONF )
+										)::get_max(`High);
+								end
+								FP : begin
+									weight[i] <=
+										FpUtils #(
+											.CONF	( W_CONF )
+										)::get_max(`High);
+								end
+							endcase
+						end
+					end else begin
+						weight <= t_en ? new_weight : weight;
+					end
+				end
+			end
+
+			//*** randomize initial weight
+			RESET_RANDOM : begin : CASE_rand
+				always_ff @( posedge clk or negedge reset_ ) begin
+					if ( reset_ == `Enable_ ) begin
+						for ( i = 0; i < WEIGHT; i = i + 1 ) begin
+							weight[i] <= init_rand(i);
+						end
+					end else begin
+						weight <= t_en ? new_weight : weight; 
+					end
+				end
+
+				//* xor-shift based pseudo random generator
+				function [W_PREC-1:0] init_rand (
+					input bit [31:0]	idx
+				);
+					bit [31:0]		i;
+					bit [31:0]		r;
+
+					r = 32'd2463534242;
+					for ( i = 0; i < idx + 1; i = i + 1 ) begin
+						r = r ^ (r << 13);
+						r = r ^ (r >> 17);
+						r = r ^ (r << 5);
+					end
+
+					init_rand = r;
+				endfunction
+			end
+		endcase
+	endgenerate
 
 endmodule

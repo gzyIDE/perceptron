@@ -131,7 +131,7 @@ virtual class FpUtils #(
 		real				max;
 
 		rn = decode(in);
-		$write("MAX ");
+		//$write("MAX ");
 		max = decode(get_max(in[PREC-1]));
 		check_max = ( rn == max );
 	endfunction

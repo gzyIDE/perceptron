@@ -19,7 +19,7 @@ typedef enum byte {
 } dtype_t;
 
 //*** Default type
-`define DEF_TYPE		INT
+`define DEF_TYPE		FXP
 
 
 
@@ -45,10 +45,6 @@ typedef struct {
 } dconf_t;
 
 //*** Default Configurations
-//* Default Settings
-`define DEF_DCONF		dconf_t'{dtype:`DEF_TYPE, sign:1'b0, prec:4, frac:0}
-`define DEF_DCONFS		dconf_t'{dtype:`DEF_TYPE, sign:1'b0, prec:4, frac:0}
-`define DEF_DCONFL		dconf_t'{dtype:`DEF_TYPE, sign:1'b0, prec:16, frac:0}
 //* Boolean
 `define DEF_DCONF_B		dconf_t'{dtype:BOOL, sign:1'b0, prec:1, frac:0}
 //* Integer
@@ -63,6 +59,16 @@ typedef struct {
 `define DEF_DCONF_FP	dconf_t'{dtype:FP, sign:1'b1, prec:8, frac:3}
 `define DEF_DCONFS_FP	dconf_t'{dtype:FP, sign:1'b1, prec:4, frac:2}
 `define DEF_DCONFL_FP	dconf_t'{dtype:FP, sign:1'b1, prec:16, frac:5}
+//* Default Settings ( Modify by your preferences )
+//`define DEF_DCONF		`DEF_DCONF_INT
+//`define DEF_DCONFS	`DEF_DCONFS_INT
+//`define DEF_DCONFL	`DEF_DCONFL_INT
+`define DEF_DCONF		`DEF_DCONF_FXP
+`define DEF_DCONFS		`DEF_DCONFS_FXP
+`define DEF_DCONFL		`DEF_DCONFL_FXP
+//`define DEF_DCONF		`DEF_DCONF_FP
+//`define DEF_DCONFS	`DEF_DCONFS_FP
+//`define DEF_DCONFL	`DEF_DCONFL_FP
 
 
 

@@ -185,7 +185,7 @@ module p_mult_test;
 			$display("ans: %f", ans);
 			`SetCharBold
 			`SetCharYellow
-			$display("Imprecise Result!!");
+			$display("Result Rounded!!");
 			`ResetCharSetting
 		end
 	endtask
@@ -234,7 +234,7 @@ module p_mult_test;
 				$display("exptected: %d", ans); 
 				`SetCharBold
 				`SetCharYellow
-				$display("Imprecise Result!!");
+				$display("Result Rounded!!");
 				`ResetCharSetting
 			end
 		end
@@ -294,11 +294,6 @@ module p_mult_test;
 `endif
 	end
 
-`ifdef SimVision
-	initial begin
-		$shm_open();
-		$shm_probe("ACF");
-	end
-`endif
+	`include "waves.vh"
 
 endmodule

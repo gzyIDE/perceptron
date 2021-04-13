@@ -16,11 +16,11 @@
 
 module p_div_pow2_test;
 	parameter STEP = 10;
-	// carry up mode
+	// round up mode
 	//		0: discard lower bits
-	//		1: carry up if lower bits are greater than or equal (1<<n)/2
-	//		2: carry up if lower bits are not zero
-	parameter CARRYUP = 1;
+	//		1: round up if lower bits are greater than or equal (1<<n)/2
+	//		2: round up if lower bits are not zero
+	parameter ROUND = 2;
 	parameter SHIFT = 2;
 `ifdef SIM_INT
 	parameter dtype_t TYPE = INT;
@@ -30,7 +30,7 @@ module p_div_pow2_test;
 	parameter I_FRAC = 0;			// exponet of input
 	// input1 configuration
 	parameter O_SIGN = `Enable;		// 0 : unsigned; 1 : signed (for FXP)
-	parameter O_PREC = 8;			// input precision
+	parameter O_PREC = 8-SHIFT;			// input precision
 	parameter O_FRAC = 0;			// exponet of input
 `else
 	parameter dtype_t TYPE = FXP;
@@ -93,7 +93,7 @@ module p_div_pow2_test;
 	//***** shift based divider module
 	p_div_pow2 #(
 		.SHIFT		( SHIFT ),
-		.CARRYUP	( CARRYUP ),
+		.ROUND		( ROUND ),
 		.I_CONF		( I_CONF ),
 		.O_CONF		( O_CONF )
 	) div (

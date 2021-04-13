@@ -11,8 +11,8 @@
 `include "perceptron.svh"
 `include "sim.vh"
 
-//`define SIM_FXP
-`define SIM_INT
+`define SIM_FXP
+//`define SIM_INT
 
 module p_sub_test;
 	parameter STEP = 10;
@@ -35,15 +35,15 @@ module p_sub_test;
 	// input1 configuration
 	parameter I1_SIGN = `Enable;	// 0 : unsigned; 1 : signed (for FXP)
 	parameter I1_PREC = 8;			// input precision
-	parameter I1_EXP = 3;			// exponet of input
+	parameter I1_FRAC = 3;			// exponet of input
 	// input2 configuration
 	parameter I2_SIGN = `Enable;
 	parameter I2_PREC = 16;
-	parameter I2_EXP = 4;
+	parameter I2_FRAC = 4;
 	// output configuration
 	parameter O_SIGN = I1_SIGN || I2_SIGN;
 	parameter O_PREC = `Max(I1_PREC,I2_PREC);
-	parameter O_EXP = `Max(I1_EXP,I2_EXP);
+	parameter O_FRAC = `Max(I1_FRAC,I2_FRAC);
 `endif
 
 	// Simulation Loops
@@ -157,12 +157,12 @@ module p_sub_test;
 			if ( ans == res ) begin
 				`SetCharBold
 				`SetCharGreen
-				$display("Mult OK");
+				$display("Sub OK");
 				`ResetCharSetting
 			end else begin
 				`SetCharBold
 				`SetCharRed
-				$display("Mult NG");
+				$display("Sub NG");
 				`ResetCharSetting
 			end
 		end
@@ -178,7 +178,7 @@ module p_sub_test;
 			$display("ans: %f", ans);
 			`SetCharBold
 			`SetCharYellow
-			$display("Imprecise Result!!");
+			$display("Result Rounded!!");
 			`ResetCharSetting
 		end
 	endtask
@@ -195,13 +195,13 @@ module p_sub_test;
 			if ( ans == res ) begin
 				`SetCharBold
 				`SetCharGreen
-				$display("Mult OK");
+				$display("Sub OK");
 				`ResetCharSetting
 			end else begin
 				`SetCharBold
 				`SetCharRed
 				$display("res: %d", res);
-				$display("Mult NG");
+				$display("Sub NG");
 				`ResetCharSetting
 			end
 		end
@@ -226,7 +226,7 @@ module p_sub_test;
 				$display("exptected: %d", ans);
 				`SetCharBold
 				`SetCharYellow
-				$display("Imprecise Result!!");
+				$display("Result Rounded!!");
 				`ResetCharSetting
 			end
 		end
@@ -287,11 +287,6 @@ module p_sub_test;
 		$finish;
 	end
 
-`ifdef SimVision
-	initial begin
-		$shm_open();
-		$shm_probe("ACF");
-	end
-`endif
+	`include "waves.vh"
 
 endmodule

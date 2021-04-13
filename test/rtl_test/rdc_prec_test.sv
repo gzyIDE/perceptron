@@ -247,11 +247,6 @@ module rdc_prec_test;
 `endif
 	end
 
-`ifdef SimVision
-	initial begin
-		$shm_open();
-		$shm_probe("ACF");
-	end
-`endif
+	`include "waves.vh"
 
 endmodule

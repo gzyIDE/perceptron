@@ -113,7 +113,7 @@ module p_acc_test;
 				if ( udf || ovf || rounded ) begin
 					`SetCharBold
 					`SetCharYellow
-					$display("Imprecise Result");
+					$display("Result Rounded");
 					`ResetCharSetting
 				end else begin
 					`SetCharBold
@@ -159,7 +159,7 @@ module p_acc_test;
 				if ( udf || ovf || rounded ) begin
 					`SetCharBold
 					`SetCharYellow
-					$display("Imprecise Result");
+					$display("Result Rounded");
 					`ResetCharSetting
 				end else begin
 					`SetCharBold

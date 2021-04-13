@@ -11,8 +11,8 @@
 `include "perceptron.svh"
 `include "sim.vh"
 
-//`define SIM_FXP
-`define SIM_INT
+`define SIM_FXP
+//`define SIM_INT
 
 module p_add_test;
 	parameter STEP = 10;
@@ -158,18 +158,18 @@ module p_add_test;
 			if ( ans == res ) begin
 				`SetCharBold
 				`SetCharGreen
-				$display("Mult OK");
+				$display("Add OK");
 				`ResetCharSetting
 			end else begin
 				`SetCharBold
 				`SetCharRed
-				$display("Mult NG");
+				$display("Add NG");
 				`ResetCharSetting
 			end
 		end
 	endtask
 
-	/* check imprecise result */
+	//*** check imprecise result
 	task check_fxp_imp;
 		real		ans;	// answer from testbench
 		real		res;	// result from module
@@ -179,7 +179,7 @@ module p_add_test;
 			$display("ans: %f", ans);
 			`SetCharBold
 			`SetCharYellow
-			$display("Imprecise Result!!");
+			$display("Result rounded");
 			`ResetCharSetting
 		end
 	endtask
@@ -197,19 +197,19 @@ module p_add_test;
 			if ( ans == res ) begin
 				`SetCharBold
 				`SetCharGreen
-				$display("Mult OK");
+				$display("Add OK");
 				`ResetCharSetting
 			end else begin
 				`SetCharBold
 				`SetCharRed
 				$display("res: %d", res);
-				$display("Mult NG");
+				$display("Add NG");
 				`ResetCharSetting
 			end
 		end
 	endtask
 
-	/* check imprecise result */
+	//*** check imprecise result
 	task check_int_imp;
 		int		ans;	// answer from testbench
 		int		res;	// result from module
@@ -221,21 +221,21 @@ module p_add_test;
 				$display("exptected: %d", ans); 
 				`SetCharBold
 				`SetCharRed
-				$display("Faluse Overflow Check!!");
+				$display("False Overflow Check!!");
 				`ResetCharSetting
 			end else begin
 				$display("result: %d", res);
 				$display("exptected: %d", ans); 
 				`SetCharBold
 				`SetCharYellow
-				$display("Imprecise Result!!");
+				$display("Result Ruonded!!");
 				`ResetCharSetting
 			end
 		end
 	endtask
 `endif
 
-	/***** simulation body *****/
+	//***** simulation body
 	integer i;
 	initial begin
 		in1 = {I1_PREC{1'b0}};
@@ -289,11 +289,6 @@ module p_add_test;
 		$finish;
 	end
 
-`ifdef SimVision
-	initial begin
-		$shm_open();
-		$shm_probe("ACF");
-	end
-`endif
+	`include "waves.vh"
 
 endmodule

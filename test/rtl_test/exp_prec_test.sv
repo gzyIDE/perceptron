@@ -109,14 +109,12 @@ module exp_prec_test;
 
 			$display("ans: %f", ans);
 			if ( ans == res ) begin
-				`SetCharBold
-				`SetCharGreen
-				$display("Mult OK");
+				`SetCharGreenBold
+				$display("Expand Precision OK");
 				`ResetCharSetting
 			end else begin
-				`SetCharBold
-				`SetCharRed
-				$display("Mult NG");
+				`SetCharRedBold
+				$display("Expand Precision NG");
 				`ResetCharSetting
 			end
 		end
@@ -133,15 +131,13 @@ module exp_prec_test;
 
 			$display("ans: %d", ans);
 			if ( ans == res ) begin
-				`SetCharBold
-				`SetCharGreen
-				$display("Mult OK");
+				`SetCharGreenBold
+				$display("Expand Precision OK");
 				`ResetCharSetting
 			end else begin
-				`SetCharBold
-				`SetCharRed
+				`SetCharRedBold
 				$display("res: %d", res);
-				$display("Mult NG");
+				$display("Expand Precision NG");
 				`ResetCharSetting
 			end
 		end
@@ -184,11 +180,6 @@ module exp_prec_test;
 		$finish;
 	end
 
-`ifdef SimVision
-	initial begin
-		$shm_open();
-		$shm_probe("ACF");
-	end
-`endif
+	`include "waves.vh"
 
 endmodule
